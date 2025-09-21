@@ -365,6 +365,7 @@ vercel --prod
 | `IRYS_RPC_URL` | `https://testnet-rpc.irys.xyz/v1/execution-rpc` | IRYS 测试网 RPC |
 | `IRYS_CHAIN_ID` | `1270` | 链 ID |
 | `CONTRACT_ADDRESS` | `0xAf34062DdDfa12347b81A9d8EAFf1B24a8F25215` | 合约地址 |
+| `NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID` | `a0c4767c4b4a4a4a4a4a4a4a4a4a4a4a4` | WalletConnect 项目 ID |
 
 详细部署指南请查看 [VERCEL_DEPLOYMENT.md](./VERCEL_DEPLOYMENT.md)
 

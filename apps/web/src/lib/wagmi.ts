@@ -31,8 +31,8 @@ export const irys = defineChain({
  * Wagmi configuration for IRYS Testnet
  */
 export const config = getDefaultConfig({
-  appName: 'Eternal Calendar NFT',
-  projectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID || 'your-project-id',
+  appName: 'IRYS Tarot dApp',
+  projectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID || 'a0c4767c4b4a4a4a4a4a4a4a4a4a4a4a4',
   chains: [irys],
   transports: {
     [irys.id]: http(process.env.NEXT_PUBLIC_IRYS_RPC_URL || 'https://testnet-rpc.irys.xyz/v1/execution-rpc'),
