@@ -361,6 +361,11 @@ vercel --prod
 - 环境变量是否已正确配置
 - 重新部署项目
 
+**⚠️ 如果出现合约调用错误，请检查：**
+- `CONTRACT_ADDRESS` 环境变量是否已设置
+- `NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID` 是否已设置
+- 所有必需的环境变量是否已正确配置
+
 ### 环境变量配置
 
 在 Vercel 控制台设置以下环境变量：

@@ -307,6 +307,13 @@ export function TarotReading() {
   const handleSubmitFortune = async () => {
     if (!address || !currentReading) return;
 
+    // 检查合约地址是否有效
+    if (!CONTRACT_ADDRESS || CONTRACT_ADDRESS === '0x0000000000000000000000000000000000000000') {
+      setShowFailureModal(true);
+      setFailureMessage('合约地址未配置，无法提交运势。请检查环境变量设置。');
+      return;
+    }
+
     try {
       // 显示进度弹窗
       setShowProgressModal(true);
