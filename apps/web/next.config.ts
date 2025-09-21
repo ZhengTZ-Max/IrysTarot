@@ -13,6 +13,7 @@ const nextConfig: NextConfig = {
   // 环境变量配置
   env: {
     CUSTOM_KEY: process.env.CUSTOM_KEY,
+    NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID: process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID || 'YOUR_PROJECT_ID',
   },
   
   // Webpack配置

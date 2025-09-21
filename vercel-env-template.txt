@@ -16,7 +16,7 @@ NEXT_PUBLIC_APP_DESCRIPTION=Mystical Tarot Divination on IRYS Testnet
 NEXT_PUBLIC_APP_URL=https://your-project.vercel.app
 
 # 钱包配置
-NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID=a0c4767c4b4a4a4a4a4a4a4a4a4a4a4a4
+NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID=YOUR_PROJECT_ID
 
 # 可选：数据库配置（如果需要后端功能）
 # DATABASE_URL=your_database_url

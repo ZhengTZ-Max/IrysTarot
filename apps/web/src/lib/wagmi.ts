@@ -32,7 +32,7 @@ export const irys = defineChain({
  */
 export const config = getDefaultConfig({
   appName: 'IRYS Tarot dApp',
-  projectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID || 'a0c4767c4b4a4a4a4a4a4a4a4a4a4a4a4',
+  projectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID || 'YOUR_PROJECT_ID',
   chains: [irys],
   transports: {
     [irys.id]: http(process.env.NEXT_PUBLIC_IRYS_RPC_URL || 'https://testnet-rpc.irys.xyz/v1/execution-rpc'),
