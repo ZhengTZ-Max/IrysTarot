@@ -1,6 +1,6 @@
 'use client';
 
-import { TarotCard as TarotCardType } from '@/lib/tarot';
+import { TarotCard as TarotCardType } from '@/lib/tarot-bilingual';
 import { useState } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 
@@ -84,14 +84,21 @@ export function TarotCard({ card, isReversed, isRevealed, onClick }: TarotCardPr
             {/* 关键词 */}
             <div className="text-center">
               <div className="flex flex-wrap justify-center gap-2">
-                {(isReversed ? card.reversed.keywords : card.upright.keywords).slice(0, 3).map((keyword, index) => (
-                  <span 
-                    key={index}
-                    className="px-3 py-2 text-sm bg-gold-500/20 text-gold-300 rounded-full border border-gold-500/30"
-                  >
-                    {keyword}
-                  </span>
-                ))}
+                {card && card.upright && card.reversed && 
+                 (isReversed ? card.reversed.keywords : card.upright.keywords) && 
+                 (isReversed ? card.reversed.keywords : card.upright.keywords).slice(0, 3).map((keyword, index) => {
+                  const keywordsEn = isReversed ? card.reversed.keywordsEn : card.upright.keywordsEn;
+                  const keywordEn = keywordsEn && keywordsEn[index] ? keywordsEn[index] : keyword;
+                  return (
+                    <span 
+                      key={index}
+                      className="px-3 py-2 text-sm bg-gold-500/20 text-gold-300 rounded-full border border-gold-500/30"
+                      title={keywordEn}
+                    >
+                      {keyword}
+                    </span>
+                  );
+                })}
               </div>
             </div>
           </div>

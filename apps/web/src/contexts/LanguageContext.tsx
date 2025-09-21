@@ -46,10 +46,13 @@ const translations = {
     'status.successDesc': '您的塔罗牌 NFT 已永久记录在IRYS区块链上',
     
     // 卡牌信息
-    'card.meaning': '卡牌含义：',
-    'card.fortune': '今日运势：',
-    'card.reversed': '(逆位)',
-    'card.upright': '(正位)',
+    'card.meaning': '卡牌含义 / Card Meaning:',
+    'card.fortune': '今日运势 / Today\'s Fortune:',
+    'card.keywords': '关键词 / Keywords:',
+    'card.reversed': '(逆位 / Reversed)',
+    'card.upright': '(正位 / Upright)',
+    'card.back.title': '神秘力量 / Mystical Power',
+    'card.back.desc': '点击抽取你的塔罗牌 / Click to draw your tarot card',
     
     // 错误信息
     'error.minting': '铸造失败',
@@ -59,11 +62,9 @@ const translations = {
     'tx.status': '状态',
     
     // 每日限制
-    'daily.title': '今日塔罗指引',
-    'daily.desc': '每个人每天只能抽取两张塔罗牌。让神秘IRYS力量为您揭示今日的运势与指引。',
+    'daily.title': '今日塔罗指引 / Today\'s Tarot Guidance',
+    'daily.desc': '每个人每天只能抽取两张塔罗牌。让神秘IRYS力量为您揭示今日的运势与指引。\nEach person can only draw two tarot cards per day. Let the mysterious IRYS power reveal today\'s fortune and guidance for you.',
     
-    // 卡牌背面
-    'card.back.title': '神秘塔罗',
   },
   en: {
     // 页面标题和描述

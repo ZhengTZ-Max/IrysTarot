@@ -6,7 +6,7 @@ import { TarotCard } from './TarotCard';
 import { ConnectWallet } from './ConnectWallet';
 import { LanguageSwitcher } from './LanguageSwitcher';
 import { FallingElements } from './FallingElements';
-import { generateTarotCard, generateFortune, hasDrawnToday, markDrawnToday, generateTarotNFTMetadata, MAJOR_ARCANA, type TarotReading as TarotReadingType, type TarotCard as TarotCardType } from '@/lib/tarot';
+import { generateTarotReading, generateTarotNFTMetadata, MAJOR_ARCANA, type TarotReading as TarotReadingType } from '@/lib/tarot-bilingual';
 import { CONTRACT_CONFIG, DEFAULT_MINT_PRICE, generateTarotTokenURI } from '@/lib/contract';
 import { useLanguage } from '@/contexts/LanguageContext';
 
@@ -24,7 +24,6 @@ export function TarotReading() {
   const [isDrawing, setIsDrawing] = useState(false);
   const [needsSignature, setNeedsSignature] = useState(false);
   const [isClient, setIsClient] = useState(false);
-  const [drawnCards, setDrawnCards] = useState<TarotReadingType[]>([]);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [dailyCards, setDailyCards] = useState<TarotReadingType[]>([]);
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
@@ -37,9 +36,10 @@ export function TarotReading() {
   const [showProgressModal, setShowProgressModal] = useState(false);
   const [progressStep, setProgressStep] = useState(0);
   const [progressMessage, setProgressMessage] = useState('');
+  const [transactionHash, setTransactionHash] = useState<string | null>(null);
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 
-  // 检查今日是否已抽取
-  const hasDrawnTodayCheck = address && isClient ? hasDrawnToday(address) : false;
+  // 检查今日是否已抽取 - 使用本地存储检查
 
   // 客户端渲染检查
   React.useEffect(() => {
@@ -54,11 +54,13 @@ export function TarotReading() {
       const submittedKey = `tarot_submitted_${address}_${today}`;
       const submittedCardKey = `tarot_submitted_card_${address}_${today}`;
       const resetKey = `tarot_reset_${address}_${today}`;
+      const transactionHashKey = `tarot_transaction_hash_${address}_${today}`;
       
       const savedCards = localStorage.getItem(dailyKey);
       const isSubmittedToday = localStorage.getItem(submittedKey);
       const savedSubmittedCard = localStorage.getItem(submittedCardKey);
       const savedResetCount = localStorage.getItem(resetKey);
+      const savedTransactionHash = localStorage.getItem(transactionHashKey);
       
       if (savedCards) {
         const cards = JSON.parse(savedCards);
@@ -77,6 +79,11 @@ export function TarotReading() {
         setCurrentReading(submitted);
         setCurrentCardIndex(0);
         setIsRevealed(true);
+        setShowSuccessMessage(true);
+      }
+      
+      if (savedTransactionHash) {
+        setTransactionHash(savedTransactionHash);
       }
       
       if (savedResetCount) {
@@ -225,16 +232,23 @@ export function TarotReading() {
         
         setIsSubmitted(true);
         setSubmittedCard(currentReading);
+        setShowSuccessMessage(true);
 
-        // 保存提交状态到本地存储
+        // 保存提交状态到本地存储，包括交易哈希
         const today = new Date().toDateString();
         const submittedKey = `tarot_submitted_${address}_${today}`;
         const submittedCardKey = `tarot_submitted_card_${address}_${today}`;
+        const transactionHashKey = `tarot_transaction_hash_${address}_${today}`;
+        
         localStorage.setItem(submittedKey, 'true');
         localStorage.setItem(submittedCardKey, JSON.stringify(currentReading));
+        if (hash) {
+          setTransactionHash(hash);
+          localStorage.setItem(transactionHashKey, hash);
+        }
       }, 2000); // 显示成功状态2秒
     }
-  }, [isConfirmed, isSubmitted, address, currentReading]);
+  }, [isConfirmed, isSubmitted, address, currentReading, hash]);
 
   const performTarotDraw = async () => {
     if (!address) return;
@@ -248,18 +262,7 @@ export function TarotReading() {
     // 简单的延迟效果
     setTimeout(() => {
       try {
-        const { card, isReversed } = generateTarotCard(address);
-        const fortune = generateFortune(card, isReversed, address);
-        const interpretation = isReversed ? card.reversed.meaning : card.upright.meaning;
-        
-        const reading: TarotReadingType = {
-          card,
-          isReversed,
-          interpretation,
-          fortune,
-          date: new Date().toDateString(),
-          walletAddress: address
-        };
+        const reading = generateTarotReading(MAJOR_ARCANA[Math.floor(Math.random() * MAJOR_ARCANA.length)], Math.random() < 0.3, address);
 
         // 添加到今日抽取的卡牌列表
         let newDailyCards;
@@ -392,15 +395,6 @@ export function TarotReading() {
     }
   };
 
-  // 清除今日抽取记录（用于测试）
-  const clearTodayRecord = () => {
-    if (address && typeof window !== 'undefined') {
-      const today = new Date().toDateString();
-      const key = `tarot_drawn_${address}_${today}`;
-      localStorage.removeItem(key);
-      window.location.reload(); // 刷新页面重新检查状态
-    }
-  };
 
   // 避免服务器端渲染问题
   if (!isClient) {
@@ -846,10 +840,10 @@ export function TarotReading() {
                     {/* 卡牌标题 */}
                     <div className="text-center lg:text-left">
                       <div className="flex items-center justify-center lg:justify-start gap-4 mb-2">
-                        <h3 className="text-4xl font-bold text-gold-300 font-mystical">
+                        <h3 className="text-3xl font-bold text-gold-300 font-mystical">
                           {currentReading.card.name} {currentReading.isReversed && t('card.reversed')}
                         </h3>
-                        {isSubmitted ? (
+                        {/* {isSubmitted ? (
                           <span className="text-green-400 text-lg font-semibold">
                             ✅ 已提交
                           </span>
@@ -857,7 +851,7 @@ export function TarotReading() {
                           <span className="text-gold-400 text-lg">
                             ({currentCardIndex + 1}/{dailyCards.length})
                           </span>
-                        )}
+                        )} */}
                       </div>
                       <p className="text-gold-400 text-xl">{currentReading.card.nameEn}</p>
                     </div>
@@ -866,12 +860,14 @@ export function TarotReading() {
                     <div className="bg-black/40 backdrop-blur-sm rounded-2xl border border-gold-500/30 p-6 space-y-6">
                       <div>
                         <h4 className="text-cyan-300 font-semibold mb-3 text-xl">{t('card.meaning')}</h4>
-                        <p className="text-cyan-100 text-lg leading-relaxed">{currentReading.interpretation}</p>
+                        <p className="text-cyan-100 text-lg leading-relaxed mb-2">{currentReading.interpretation}</p>
+                        <p className="text-cyan-200 text-base leading-relaxed opacity-80">{currentReading.interpretationEn}</p>
                       </div>
                       
                       <div>
                         <h4 className="text-purple-300 font-semibold mb-3 text-xl">{t('card.fortune')}</h4>
-                        <p className="text-purple-100 text-lg leading-relaxed">{currentReading.fortune}</p>
+                        <p className="text-purple-100 text-lg leading-relaxed mb-2">{currentReading.fortune}</p>
+                        <p className="text-purple-200 text-base leading-relaxed opacity-80">{currentReading.fortuneEn}</p>
                       </div>
                     </div>
 
@@ -1001,10 +997,23 @@ export function TarotReading() {
                       </div>
                     )} */}
 
-                    {isConfirmed && (
+                    {showSuccessMessage && (
                       <div className="p-4 bg-green-500/20 border border-green-500/30 text-green-300 rounded-lg">
-                        <p className="text-lg font-semibold">{t('status.success')}</p>
-                        <p>{t('status.successDesc')}</p>
+                        <p className="text-lg font-semibold">✅ 您的塔罗牌铸造成功!</p>
+                        <p className="mb-2">您的塔罗牌 NFT 已永久记录在IRYS区块链上</p>
+                        {transactionHash && (
+                          <p className="text-sm">
+                            交易哈希: 
+                            <a 
+                              href={`https://testnet-explorer.irys.xyz/tx/${transactionHash}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-cyan-300 hover:text-cyan-100 underline ml-1"
+                            >
+                              IRYS区块浏览器 | IRYS Hash View
+                            </a>
+                          </p>
+                        )}
                       </div>
                     )}
                   </div>

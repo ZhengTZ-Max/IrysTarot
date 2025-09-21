@@ -1,6 +1,21 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // 输出配置 - 用于静态导出
+  output: 'standalone',
+  
+  // 图片优化配置
+  images: {
+    unoptimized: true,
+    domains: ['localhost', 'vercel.app'],
+  },
+  
+  // 环境变量配置
+  env: {
+    CUSTOM_KEY: process.env.CUSTOM_KEY,
+  },
+  
+  // Webpack配置
   webpack: (config, { isServer }) => {
     // 解决客户端环境中Node.js模块的问题
     if (!isServer) {
@@ -20,16 +35,38 @@ const nextConfig: NextConfig = {
     }
     return config;
   },
-  // 禁用Turbopack以避免Node.js模块问题
-  experimental: {
-    turbo: {
-      rules: {
-        '*.css': {
-          loaders: ['postcss-loader'],
-          as: '*.css',
-        },
+  
+  // 重写规则 - 用于API路由
+  async rewrites() {
+    return [
+      {
+        source: '/api/:path*',
+        destination: '/api/:path*',
       },
-    },
+    ];
+  },
+  
+  // 头部配置
+  async headers() {
+    return [
+      {
+        source: '/(.*)',
+        headers: [
+          {
+            key: 'X-Frame-Options',
+            value: 'DENY',
+          },
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff',
+          },
+          {
+            key: 'Referrer-Policy',
+            value: 'origin-when-cross-origin',
+          },
+        ],
+      },
+    ];
   },
 };
 

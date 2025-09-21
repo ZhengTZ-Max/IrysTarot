@@ -1,0 +1,30 @@
+# Vercel 部署环境变量配置
+# 在 Vercel 控制台的 Environment Variables 部分添加这些变量
+
+# IRYS 测试网配置
+IRYS_RPC_URL=https://testnet-rpc.irys.xyz/v1/execution-rpc
+IRYS_CHAIN_ID=1270
+IRYS_CURRENCY_SYMBOL=IRYS
+IRYS_BLOCK_EXPLORER=https://explorer.irys.xyz
+
+# 合约配置
+CONTRACT_ADDRESS=0xAf34062DdDfa12347b81A9d8EAFf1B24a8F25215
+
+# 应用配置
+NEXT_PUBLIC_APP_NAME=IRYS Tarot dApp
+NEXT_PUBLIC_APP_DESCRIPTION=Mystical Tarot Divination on IRYS Testnet
+NEXT_PUBLIC_APP_URL=https://your-project.vercel.app
+
+# 钱包配置
+NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID=your_wallet_connect_project_id
+
+# 可选：数据库配置（如果需要后端功能）
+# DATABASE_URL=your_database_url
+# REDIS_URL=your_redis_url
+
+# 可选：API 配置
+# API_PORT=8000
+# WEB_PORT=3000
+
+# 可选：JWT 配置
+# JWT_SECRET=your-super-secret-jwt-key-here

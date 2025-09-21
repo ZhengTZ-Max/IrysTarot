@@ -6,8 +6,11 @@
 
 - **NFT 铸造**: 在 IRYS Testnet 上铸造独特的塔罗牌 NFT
 - **钱包连接**: 使用 RainbowKit 和 wagmi 进行安全的钱包连接
-- **元数据管理**: 丰富的 NFT 元数据，包括日期、年份、月份等属性
-- **批量铸造**: 支持一次铸造多个 NFT（一周的日历）
+- **中英文双语**: 完整的双语支持，包括卡牌含义、运势解读和UI界面
+- **每日限制**: 每个用户每天只能抽取2张塔罗牌，防止滥用
+- **交互式掉落效果**: 炫酷的星星、月亮和字符掉落动画
+- **点击跳转**: 掉落字符可点击跳转到对应的Twitter页面
+- **元数据管理**: 丰富的 NFT 元数据，包括中英文双语内容
 - **实时事件监听**: 后端监听区块链事件并存储到数据库
 - **响应式 UI**: 使用 TailwindCSS 构建的现代化界面
 
@@ -314,6 +317,54 @@ docker-compose -f infra/docker-compose.yml up -d
 1. 查看 [Issues](https://github.com/your-repo/issues) 页面
 2. 创建新的 Issue
 3. 联系开发团队
+
+## 🌐 Vercel 部署
+
+### 快速部署
+
+#### 方法一：一键部署脚本
+```bash
+# Windows
+deploy-vercel.bat
+
+# Linux/Mac
+chmod +x deploy-vercel.sh
+./deploy-vercel.sh
+```
+
+#### 方法二：Vercel CLI
+```bash
+# 安装 Vercel CLI
+npm i -g vercel
+
+# 登录 Vercel
+vercel login
+
+# 部署到生产环境
+vercel --prod
+```
+
+#### 方法三：GitHub 集成
+1. 推送代码到 GitHub 仓库
+2. 访问 [Vercel](https://vercel.com) 并导入项目
+3. 配置项目设置：
+   - Framework Preset: `Next.js`
+   - Root Directory: `apps/web`
+   - Build Command: `npm run build`
+4. 设置环境变量（参考 `vercel-env-template.txt`）
+5. 点击 "Deploy" 开始部署
+
+### 环境变量配置
+
+在 Vercel 控制台设置以下环境变量：
+
+| 变量名 | 值 | 说明 |
+|--------|-----|------|
+| `IRYS_RPC_URL` | `https://testnet-rpc.irys.xyz/v1/execution-rpc` | IRYS 测试网 RPC |
+| `IRYS_CHAIN_ID` | `1270` | 链 ID |
+| `CONTRACT_ADDRESS` | `0xAf34062DdDfa12347b81A9d8EAFf1B24a8F25215` | 合约地址 |
+
+详细部署指南请查看 [VERCEL_DEPLOYMENT.md](./VERCEL_DEPLOYMENT.md)
 
 ---
 

@@ -12,7 +12,12 @@ export function NFTGallery() {
   const [userNFTs, setUserNFTs] = useState<Array<{
     tokenId: string;
     tokenURI: string;
-    metadata?: any;
+    metadata?: {
+      name: string;
+      description: string;
+      image: string;
+      attributes: Array<{ trait_type: string; value: string | number }>;
+    };
   }>>([]);
 
   // Get user's NFT balance
@@ -113,7 +118,7 @@ export function NFTGallery() {
                 
                 {nft.metadata?.attributes && (
                   <div className="space-y-1">
-                    {nft.metadata.attributes.slice(0, 3).map((attr: any, index: number) => (
+                    {nft.metadata.attributes.slice(0, 3).map((attr: { trait_type: string; value: string | number }, index: number) => (
                       <div key={index} className="flex justify-between text-xs">
                         <span className="text-gray-500">{attr.trait_type}:</span>
                         <span className="text-gray-800 font-medium">{attr.value}</span>

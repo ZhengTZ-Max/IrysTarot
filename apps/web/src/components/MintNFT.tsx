@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
-import { CONTRACT_CONFIG, DEFAULT_MINT_PRICE, generateTokenURI } from '@/lib/contract';
+import { CONTRACT_CONFIG, DEFAULT_MINT_PRICE, generateTarotTokenURI } from '@/lib/contract';
 import { formatEther } from 'viem';
 
 /**
@@ -62,7 +62,7 @@ export function MintNFT() {
     }
 
     try {
-      const tokenURI = generateTokenURI(selectedDate, {
+      const tokenURI = generateTarotTokenURI({
         name: nftName,
         description: nftDescription,
         image: imageUrl,
@@ -107,7 +107,7 @@ export function MintNFT() {
         const currentDate = new Date(startDate);
         currentDate.setDate(startDate.getDate() + i);
         
-        const tokenURI = generateTokenURI(currentDate.toISOString().split('T')[0], {
+        const tokenURI = generateTarotTokenURI({
           name: `${nftName} - Day ${i + 1}`,
           description: `${nftDescription} - Day ${i + 1} of the week`,
           image: imageUrl,

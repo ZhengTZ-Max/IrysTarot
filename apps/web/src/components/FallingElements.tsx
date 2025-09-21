@@ -56,11 +56,13 @@ export function FallingElements() {
   useEffect(() => {
     const generateElements = () => {
       const newElements: FallingElement[] = [];
+      const baseTime = Date.now();
+      let idCounter = 0;
       
       // 生成星星
       for (let i = 0; i < 24; i++) {
         newElements.push({
-          id: Date.now() + i,
+          id: baseTime + (idCounter++),
           type: 'star',
           left: Math.random() * 100, // 0-100% 从右上角开始
           top: -50 - Math.random() * 100, // 随机高度
@@ -74,7 +76,7 @@ export function FallingElements() {
        // 生成IRYS字符
        for (let i = 0; i < 12; i++) {
          newElements.push({
-           id: Date.now() + 100 + i,
+           id: baseTime + (idCounter++),
            type: 'irys',
            left: Math.random() * 100, // 0-100% 从右上角开始
            top: -50 - Math.random() * 100, // 随机高度
@@ -88,7 +90,7 @@ export function FallingElements() {
         // 生成Chine字符
         for (let i = 0; i < 10; i++) {
           newElements.push({
-            id: Date.now() + 200 + i,
+            id: baseTime + (idCounter++),
             type: 'chine',
             left: Math.random() * 100, // 0-100% 从右上角开始
             top: -50 - Math.random() * 100, // 随机高度
@@ -103,7 +105,7 @@ export function FallingElements() {
         // 生成anni字符
         for (let i = 0; i < 10; i++) {
           newElements.push({
-            id: Date.now() + 300 + i,
+            id: baseTime + (idCounter++),
             type: 'anni',
             left: Math.random() * 100, // 0-100% 从右上角开始
             top: -50 - Math.random() * 100, // 随机高度
@@ -118,7 +120,7 @@ export function FallingElements() {
         // 生成Zood字符
         for (let i = 0; i < 10; i++) {
           newElements.push({
-            id: Date.now() + 400 + i,
+            id: baseTime + (idCounter++),
             type: 'zood',
             left: Math.random() * 100, // 0-100% 从右上角开始
             top: -50 - Math.random() * 100, // 随机高度
@@ -133,7 +135,7 @@ export function FallingElements() {
         // 生成Xaitoshi字符
         for (let i = 0; i < 10; i++) {
           newElements.push({
-            id: Date.now() + 500 + i,
+            id: baseTime + (idCounter++),
             type: 'xaitoshi',
             left: Math.random() * 100, // 0-100% 从右上角开始
             top: -50 - Math.random() * 100, // 随机高度
@@ -149,7 +151,7 @@ export function FallingElements() {
        // 生成月亮
        for (let i = 0; i < 6; i++) {
          newElements.push({
-           id: Date.now() + 200 + i,
+           id: baseTime + (idCounter++),
            type: 'moon',
            left: Math.random() * 100, // 0-100% 从右上角开始
            top: -50 - Math.random() * 100, // 随机高度
