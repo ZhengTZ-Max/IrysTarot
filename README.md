@@ -349,8 +349,10 @@ vercel --prod
 2. 访问 [Vercel](https://vercel.com) 并导入项目
 3. 配置项目设置：
    - Framework Preset: `Next.js`
-   - Root Directory: `apps/web`
-   - Build Command: `npm run build`
+   - Root Directory: `apps/web` ⚠️ **重要：必须设置为 `apps/web`**
+   - Build Command: `npm run build` (保持默认)
+   - Output Directory: `.next` (保持默认)
+   - Install Command: `npm install` (保持默认)
 4. 设置环境变量（参考 `vercel-env-template.txt`）
 5. 点击 "Deploy" 开始部署
 
