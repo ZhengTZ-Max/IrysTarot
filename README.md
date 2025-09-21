@@ -1,10 +1,10 @@
-# Eternal Calendar NFT dApp
+# IRYS 塔罗牌 dApp
 
-一个在 IRYS Testnet 上运行的 NFT 铸造 dApp，允许用户创建独特的日历 NFT 来纪念特殊日期。
+一个在 IRYS Testnet 上运行的塔罗牌 NFT 铸造 dApp。
 
 ## 🚀 功能特性
 
-- **NFT 铸造**: 在 IRYS Testnet 上铸造独特的日历 NFT
+- **NFT 铸造**: 在 IRYS Testnet 上铸造独特的塔罗牌 NFT
 - **钱包连接**: 使用 RainbowKit 和 wagmi 进行安全的钱包连接
 - **元数据管理**: 丰富的 NFT 元数据，包括日期、年份、月份等属性
 - **批量铸造**: 支持一次铸造多个 NFT（一周的日历）
