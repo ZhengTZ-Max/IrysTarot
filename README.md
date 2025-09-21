@@ -347,14 +347,19 @@ vercel --prod
 #### 方法三：GitHub 集成
 1. 推送代码到 GitHub 仓库
 2. 访问 [Vercel](https://vercel.com) 并导入项目
-3. 配置项目设置：
+3. **重要配置**：
    - Framework Preset: `Next.js`
-   - Root Directory: `apps/web` ⚠️ **重要：必须设置为 `apps/web`**
+   - Root Directory: `apps/web` ⚠️ **这是关键！必须设置为 `apps/web`**
    - Build Command: `npm run build` (保持默认)
    - Output Directory: `.next` (保持默认)
    - Install Command: `npm install` (保持默认)
 4. 设置环境变量（参考 `vercel-env-template.txt`）
 5. 点击 "Deploy" 开始部署
+
+**⚠️ 如果出现404错误，请检查：**
+- Root Directory 是否正确设置为 `apps/web`
+- 环境变量是否已正确配置
+- 重新部署项目
 
 ### 环境变量配置
 
