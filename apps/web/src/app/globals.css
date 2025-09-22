@@ -515,3 +515,14 @@ body {
 .progress-wave {
   animation: progressWave 2s ease-in-out infinite;
 }
+
+/* 错误状态动画 */
+.progress-error-shake {
+  animation: progressErrorShake 0.5s ease-in-out;
+}
+
+@keyframes progressErrorShake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+  20%, 40%, 60%, 80% { transform: translateX(5px); }
+}

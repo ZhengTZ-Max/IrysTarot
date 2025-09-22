@@ -38,6 +38,8 @@ export function TarotReading() {
   const [progressMessage, setProgressMessage] = useState('');
   const [transactionHash, setTransactionHash] = useState<string | null>(null);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  const [progressError, setProgressError] = useState<string | null>(null);
+  const [canCloseProgress, setCanCloseProgress] = useState(false);
 
   // 检查今日是否已抽取 - 使用本地存储检查
 
@@ -45,6 +47,47 @@ export function TarotReading() {
   React.useEffect(() => {
     setIsClient(true);
   }, []);
+
+  // 监听交易错误状态
+  React.useEffect(() => {
+    if (error && showProgressModal) {
+      console.error('Transaction error detected:', error);
+      
+      // 设置错误状态，允许关闭弹窗
+      let errorMessage = '操作失败';
+      
+      if (error.message) {
+        if (error.message.includes('User rejected') || error.message.includes('User denied')) {
+          errorMessage = '用户取消了操作';
+        } else if (error.message.includes('insufficient funds')) {
+          errorMessage = '余额不足，无法支付交易费用';
+        } else if (error.message.includes('network')) {
+          errorMessage = '网络连接异常，请检查网络后重试';
+        } else if (error.message.includes('contract')) {
+          errorMessage = '合约调用失败，请稍后重试';
+        } else if (error.message.includes('missing revert data')) {
+          errorMessage = '交易失败，请检查网络连接和合约状态';
+        } else {
+          errorMessage = `操作失败: ${error.message}`;
+        }
+      }
+      
+      setProgressError(errorMessage);
+      setProgressStep(0); // 重置步骤
+      setProgressMessage('操作失败');
+      setCanCloseProgress(true);
+    }
+  }, [error, showProgressModal]);
+
+  // 监听交易成功状态
+  React.useEffect(() => {
+    if (isConfirmed && showProgressModal && !progressError) {
+      console.log('Transaction confirmed successfully');
+      setProgressStep(4);
+      setProgressMessage('交易确认成功！');
+      setCanCloseProgress(true);
+    }
+  }, [isConfirmed, showProgressModal, progressError]);
 
   // 加载今日已抽取的卡牌
   React.useEffect(() => {
@@ -308,7 +351,7 @@ export function TarotReading() {
     if (!address || !currentReading) return;
 
     // 检查合约地址是否有效
-    if (!CONTRACT_ADDRESS || CONTRACT_ADDRESS === '0x0000000000000000000000000000000000000000') {
+    if (!CONTRACT_CONFIG.address || CONTRACT_CONFIG.address === '0x0000000000000000000000000000000000000000') {
       setShowFailureModal(true);
       setFailureMessage('合约地址未配置，无法提交运势。请检查环境变量设置。');
       return;
@@ -320,6 +363,8 @@ export function TarotReading() {
       setProgressStep(1);
       setProgressMessage('正在准备提交运势...');
       setShowFailureModal(false);
+      setProgressError(null); // 重置错误状态
+      setCanCloseProgress(false); // 重置关闭状态
       
       // 使用当前选中的卡牌
       const metadata = generateTarotNFTMetadata(currentReading);
@@ -341,12 +386,7 @@ export function TarotReading() {
     } catch (err: unknown) {
       console.error('Submission failed:', err);
       
-      // 关闭进度弹窗
-      setShowProgressModal(false);
-      setProgressStep(0);
-      setProgressMessage('');
-      
-      // 显示失败弹窗
+      // 在进度弹窗中显示错误状态
       let errorMessage = '操作失败';
       
       if (err && typeof err === 'object' && 'message' in err && typeof err.message === 'string') {
@@ -359,19 +399,32 @@ export function TarotReading() {
           errorMessage = '网络连接异常，请检查网络后重试';
         } else if (message.includes('contract')) {
           errorMessage = '合约调用失败，请稍后重试';
+        } else if (message.includes('missing revert data')) {
+          errorMessage = '交易失败，请检查网络连接和合约状态';
         } else {
           errorMessage = `操作失败: ${message}`;
         }
       }
       
-      setFailureMessage(errorMessage);
-      setShowFailureModal(true);
+      // 设置错误状态，允许关闭弹窗
+      setProgressError(errorMessage);
+      setProgressStep(0); // 重置步骤
+      setProgressMessage('操作失败');
+      setCanCloseProgress(true);
     }
   };
 
   const resetReading = () => {
     setCurrentReading(null);
     setIsRevealed(false);
+  };
+
+  const closeProgressModal = () => {
+    setShowProgressModal(false);
+    setProgressStep(0);
+    setProgressMessage('');
+    setProgressError(null);
+    setCanCloseProgress(false);
   };
 
   const closeFailureModal = () => {
@@ -519,60 +572,84 @@ export function TarotReading() {
             <div className="relative z-10 text-center">
               {/* 动态图标 */}
               <div className="mb-6 relative">
-                {progressStep === 1 && (
+                {progressError ? (
+                  <div className="progress-error-shake text-6xl text-red-400 relative">
+                    ❌
+                    <div className="absolute -top-2 -right-2 w-3 h-3 bg-red-400 rounded-full progress-step-pulse"></div>
+                    <div className="absolute -bottom-2 -left-2 w-2 h-2 bg-orange-400 rounded-full progress-step-pulse" style={{animationDelay: '0.5s'}}></div>
+                  </div>
+                ) : progressStep === 1 ? (
                   <div className="progress-step-rotate text-6xl text-cyan-400 relative">
                     🔮
                     <div className="absolute -top-2 -right-2 w-3 h-3 bg-cyan-400 rounded-full progress-step-pulse"></div>
                     <div className="absolute -bottom-2 -left-2 w-2 h-2 bg-purple-400 rounded-full progress-step-pulse" style={{animationDelay: '0.5s'}}></div>
                   </div>
-                )}
-                {progressStep === 2 && (
+                ) : progressStep === 2 ? (
                   <div className="progress-step-bounce text-6xl text-purple-400 relative">
                     ⚡
                     <div className="absolute -top-1 -right-1 w-2 h-2 bg-yellow-400 rounded-full progress-step-pulse"></div>
                     <div className="absolute -bottom-1 -left-1 w-2 h-2 bg-pink-400 rounded-full progress-step-pulse" style={{animationDelay: '0.3s'}}></div>
                   </div>
-                )}
-                {progressStep === 3 && (
+                ) : progressStep === 3 ? (
                   <div className="progress-step-pulse text-6xl text-yellow-400 relative">
                     ⏳
                     <div className="absolute -top-2 -right-2 w-3 h-3 bg-yellow-400 rounded-full progress-step-pulse"></div>
                     <div className="absolute -bottom-2 -left-2 w-2 h-2 bg-orange-400 rounded-full progress-step-pulse" style={{animationDelay: '0.7s'}}></div>
                   </div>
-                )}
-                {progressStep === 4 && (
+                ) : progressStep === 4 ? (
                   <div className="progress-success-celebration text-6xl text-green-400 relative">
                     ✅
                     <div className="absolute -top-2 -right-2 w-3 h-3 bg-green-400 rounded-full progress-step-pulse"></div>
                     <div className="absolute -bottom-2 -left-2 w-2 h-2 bg-emerald-400 rounded-full progress-step-pulse" style={{animationDelay: '0.4s'}}></div>
                     <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-2 w-1 h-1 bg-yellow-400 rounded-full progress-step-pulse" style={{animationDelay: '0.2s'}}></div>
                   </div>
-                )}
+                ) : null}
               </div>
 
               {/* 标题 */}
-              <h3 className={`text-2xl font-bold text-cyan-300 mb-4 font-mystical transition-all duration-500 ${
-                progressStep === 4 ? 'progress-success-celebration text-green-400' : ''
+              <h3 className={`text-2xl font-bold mb-4 font-mystical transition-all duration-500 ${
+                progressError 
+                  ? 'text-red-400' 
+                  : progressStep === 4 
+                    ? 'progress-success-celebration text-green-400' 
+                    : 'text-cyan-300'
               }`}>
-                {progressStep === 4 ? '运势提交成功！' : '神秘力量正在运作'}
+                {progressError 
+                  ? '操作失败' 
+                  : progressStep === 4 
+                    ? '运势提交成功！' 
+                    : '神秘力量正在运作'
+                }
               </h3>
 
               {/* 进度消息 */}
-              <p className="text-cyan-200 text-lg mb-6 transition-all duration-500">
-                {progressMessage}
+              <p className={`text-lg mb-6 transition-all duration-500 ${
+                progressError ? 'text-red-300' : 'text-cyan-200'
+              }`}>
+                {progressError || progressMessage}
               </p>
 
               {/* 进度条 */}
               <div className="w-full bg-slate-700 rounded-full h-4 mb-6 overflow-hidden relative">
                 <div 
-                  className="progress-bar-shimmer h-4 rounded-full transition-all duration-1000 ease-out relative"
-                  style={{ width: `${(progressStep / 4) * 100}%` }}
+                  className={`h-4 rounded-full transition-all duration-1000 ease-out relative ${
+                    progressError 
+                      ? 'bg-gradient-to-r from-red-500 to-red-600' 
+                      : 'progress-bar-shimmer'
+                  }`}
+                  style={{ width: progressError ? '100%' : `${(progressStep / 4) * 100}%` }}
                 >
-                  <div className="absolute inset-0 bg-white/20 progress-wave"></div>
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent progress-wave" style={{animationDelay: '1s'}}></div>
+                  {!progressError && (
+                    <>
+                      <div className="absolute inset-0 bg-white/20 progress-wave"></div>
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent progress-wave" style={{animationDelay: '1s'}}></div>
+                    </>
+                  )}
                 </div>
                 {/* 进度条光效 */}
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-cyan-400/20 to-transparent progress-wave"></div>
+                {!progressError && (
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-cyan-400/20 to-transparent progress-wave"></div>
+                )}
               </div>
 
               {/* 进度步骤指示器 */}
@@ -637,22 +714,46 @@ export function TarotReading() {
               </div>
 
               {/* 底部提示 */}
-              {progressStep < 4 && (
+              {progressError ? (
+                <div className="mt-6 space-y-4">
+                  <div className="text-red-400 text-sm">
+                    <div className="flex items-center justify-center gap-2">
+                      <span>操作失败，请重试或联系支持</span>
+                      <span className="text-xs">⚠️</span>
+                    </div>
+                  </div>
+                  <button
+                    onClick={closeProgressModal}
+                    className="px-6 py-2 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition-colors duration-300"
+                  >
+                    关闭
+                  </button>
+                </div>
+              ) : progressStep < 4 ? (
                 <div className="mt-6 text-cyan-400 text-sm progress-step-pulse">
                   <div className="flex items-center justify-center gap-2">
                     <span>请耐心等待，不要关闭页面</span>
                     <span className="text-xs">🔮</span>
                   </div>
                 </div>
-              )}
-
-              {/* 成功庆祝效果 */}
-              {progressStep === 4 && (
+              ) : (
                 <div className="mt-6 text-green-400 text-sm progress-success-celebration">
                   <div className="flex items-center justify-center gap-2">
                     <span>运势已成功提交到区块链！</span>
                     <span className="text-lg">🎊</span>
                   </div>
+                </div>
+              )}
+
+              {/* 关闭按钮 - 仅在成功或错误时显示 */}
+              {(progressStep === 4 || canCloseProgress) && !progressError && (
+                <div className="mt-6">
+                  <button
+                    onClick={closeProgressModal}
+                    className="px-6 py-2 bg-cyan-600 hover:bg-cyan-700 text-white font-semibold rounded-lg transition-colors duration-300"
+                  >
+                    关闭
+                  </button>
                 </div>
               )}
             </div>

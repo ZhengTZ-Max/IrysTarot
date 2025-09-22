@@ -40,7 +40,7 @@ export const config = getDefaultConfig({
 });
 
 // Contract configuration
-export const CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS || '0x0000000000000000000000000000000000000000';
+export const CONTRACT_ADDRESS = '0xAf34062DdDfa12347b81A9d8EAFf1B24a8F25215';
 export const CHAIN_ID = 1270;
 export const CHAIN_NAME = 'IRYS Testnet';
 export const CURRENCY_SYMBOL = 'IRYS';
