@@ -1,6 +1,14 @@
 import { getDefaultConfig } from '@rainbow-me/rainbowkit';
 import { http } from 'viem';
 import { defineChain } from 'viem';
+import { 
+  okxWallet,
+  metaMaskWallet,
+  rainbowWallet,
+  coinbaseWallet,
+  walletConnectWallet,
+  phantomWallet
+} from '@rainbow-me/rainbowkit/wallets';
 
 /**
  * Custom IRYS Testnet chain definition
@@ -37,6 +45,19 @@ export const config = getDefaultConfig({
   transports: {
     [irys.id]: http(process.env.NEXT_PUBLIC_IRYS_RPC_URL || 'https://testnet-rpc.irys.xyz/v1/execution-rpc'),
   },
+  wallets: [
+    {
+      groupName: '推荐钱包',
+      wallets: [
+        okxWallet,
+        metaMaskWallet,
+        rainbowWallet,
+        coinbaseWallet,
+        walletConnectWallet,
+        phantomWallet
+      ],
+    },
+  ],
 });
 
 // Contract configuration

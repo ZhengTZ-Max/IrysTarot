@@ -6,6 +6,7 @@ export interface TarotCard {
   id: number;
   name: string;
   nameEn: string;
+  emoji: string;
   upright: {
     keywords: string[];
     keywordsEn: string[];
@@ -28,6 +29,14 @@ export interface TarotReading {
   interpretationEn: string;
   fortune: string;
   fortuneEn: string;
+  meaning?: {
+    zh: string;
+    en: string;
+  };
+  keywords?: {
+    zh: string[];
+    en: string[];
+  };
   date: string;
   walletAddress: string;
 }
@@ -38,6 +47,7 @@ export const MAJOR_ARCANA: TarotCard[] = [
     id: 0,
     name: "愚者",
     nameEn: "The Fool",
+    emoji: "🃏",
     upright: {
       keywords: ["新开始", "冒险", "纯真", "自由"],
       keywordsEn: ["New Beginnings", "Adventure", "Innocence", "Freedom"],
@@ -56,6 +66,7 @@ export const MAJOR_ARCANA: TarotCard[] = [
     id: 1,
     name: "魔术师",
     nameEn: "The Magician",
+    emoji: "🎩",
     upright: {
       keywords: ["技能", "意志力", "专注", "创造"],
       keywordsEn: ["Skill", "Willpower", "Focus", "Creation"],
@@ -74,6 +85,7 @@ export const MAJOR_ARCANA: TarotCard[] = [
     id: 2,
     name: "女祭司",
     nameEn: "The High Priestess",
+    emoji: "🌙",
     upright: {
       keywords: ["直觉", "神秘", "潜意识", "智慧"],
       keywordsEn: ["Intuition", "Mystery", "Subconscious", "Wisdom"],
@@ -92,6 +104,7 @@ export const MAJOR_ARCANA: TarotCard[] = [
     id: 3,
     name: "女皇",
     nameEn: "The Empress",
+    emoji: "👑",
     upright: {
       keywords: ["丰盛", "母性", "创造力", "自然"],
       keywordsEn: ["Abundance", "Motherhood", "Creativity", "Nature"],
@@ -110,6 +123,7 @@ export const MAJOR_ARCANA: TarotCard[] = [
     id: 4,
     name: "皇帝",
     nameEn: "The Emperor",
+    emoji: "🏛️",
     upright: {
       keywords: ["权威", "秩序", "领导力", "稳定"],
       keywordsEn: ["Authority", "Order", "Leadership", "Stability"],
@@ -128,6 +142,7 @@ export const MAJOR_ARCANA: TarotCard[] = [
     id: 5,
     name: "教皇",
     nameEn: "The Hierophant",
+    emoji: "⛪",
     upright: {
       keywords: ["传统", "精神指导", "学习", "仪式"],
       keywordsEn: ["Tradition", "Spiritual Guidance", "Learning", "Ritual"],
@@ -146,6 +161,7 @@ export const MAJOR_ARCANA: TarotCard[] = [
     id: 6,
     name: "恋人",
     nameEn: "The Lovers",
+    emoji: "💕",
     upright: {
       keywords: ["爱情", "选择", "和谐", "结合"],
       keywordsEn: ["Love", "Choice", "Harmony", "Union"],
@@ -164,6 +180,7 @@ export const MAJOR_ARCANA: TarotCard[] = [
     id: 7,
     name: "战车",
     nameEn: "The Chariot",
+    emoji: "🏺",
     upright: {
       keywords: ["决心", "胜利", "意志力", "控制"],
       keywordsEn: ["Determination", "Victory", "Willpower", "Control"],
@@ -182,6 +199,7 @@ export const MAJOR_ARCANA: TarotCard[] = [
     id: 8,
     name: "力量",
     nameEn: "Strength",
+    emoji: "💪",
     upright: {
       keywords: ["内在力量", "勇气", "耐心", "温柔"],
       keywordsEn: ["Inner Strength", "Courage", "Patience", "Gentleness"],
@@ -200,6 +218,7 @@ export const MAJOR_ARCANA: TarotCard[] = [
     id: 9,
     name: "隐士",
     nameEn: "The Hermit",
+    emoji: "🔦",
     upright: {
       keywords: ["内省", "智慧", "指导", "孤独"],
       keywordsEn: ["Introspection", "Wisdom", "Guidance", "Solitude"],
@@ -218,6 +237,7 @@ export const MAJOR_ARCANA: TarotCard[] = [
     id: 10,
     name: "命运之轮",
     nameEn: "Wheel of Fortune",
+    emoji: "🎡",
     upright: {
       keywords: ["变化", "命运", "周期", "机遇"],
       keywordsEn: ["Change", "Destiny", "Cycle", "Opportunity"],
@@ -236,6 +256,7 @@ export const MAJOR_ARCANA: TarotCard[] = [
     id: 11,
     name: "正义",
     nameEn: "Justice",
+    emoji: "⚖️",
     upright: {
       keywords: ["公正", "平衡", "真理", "责任"],
       keywordsEn: ["Fairness", "Balance", "Truth", "Responsibility"],
@@ -254,6 +275,7 @@ export const MAJOR_ARCANA: TarotCard[] = [
     id: 12,
     name: "倒吊人",
     nameEn: "The Hanged Man",
+    emoji: "🔄",
     upright: {
       keywords: ["牺牲", "等待", "新视角", "接受"],
       keywordsEn: ["Sacrifice", "Waiting", "New Perspective", "Acceptance"],
@@ -272,6 +294,7 @@ export const MAJOR_ARCANA: TarotCard[] = [
     id: 13,
     name: "死神",
     nameEn: "Death",
+    emoji: "💀",
     upright: {
       keywords: ["结束", "转变", "重生", "释放"],
       keywordsEn: ["End", "Transformation", "Rebirth", "Release"],
@@ -290,6 +313,7 @@ export const MAJOR_ARCANA: TarotCard[] = [
     id: 14,
     name: "节制",
     nameEn: "Temperance",
+    emoji: "🍷",
     upright: {
       keywords: ["平衡", "调和", "耐心", "和谐"],
       keywordsEn: ["Balance", "Harmony", "Patience", "Moderation"],
@@ -308,6 +332,7 @@ export const MAJOR_ARCANA: TarotCard[] = [
     id: 15,
     name: "恶魔",
     nameEn: "The Devil",
+    emoji: "😈",
     upright: {
       keywords: ["束缚", "诱惑", "物质主义", "依赖"],
       keywordsEn: ["Bondage", "Temptation", "Materialism", "Dependency"],
@@ -326,6 +351,7 @@ export const MAJOR_ARCANA: TarotCard[] = [
     id: 16,
     name: "高塔",
     nameEn: "The Tower",
+    emoji: "🗼",
     upright: {
       keywords: ["突然变化", "启示", "解放", "重建"],
       keywordsEn: ["Sudden Change", "Revelation", "Liberation", "Rebuilding"],
@@ -344,6 +370,7 @@ export const MAJOR_ARCANA: TarotCard[] = [
     id: 17,
     name: "星星",
     nameEn: "The Star",
+    emoji: "⭐",
     upright: {
       keywords: ["希望", "灵感", "精神指引", "治愈"],
       keywordsEn: ["Hope", "Inspiration", "Spiritual Guidance", "Healing"],
@@ -362,6 +389,7 @@ export const MAJOR_ARCANA: TarotCard[] = [
     id: 18,
     name: "月亮",
     nameEn: "The Moon",
+    emoji: "🌙",
     upright: {
       keywords: ["幻觉", "潜意识", "恐惧", "直觉"],
       keywordsEn: ["Illusion", "Subconscious", "Fear", "Intuition"],
@@ -380,6 +408,7 @@ export const MAJOR_ARCANA: TarotCard[] = [
     id: 19,
     name: "太阳",
     nameEn: "The Sun",
+    emoji: "☀️",
     upright: {
       keywords: ["成功", "快乐", "活力", "成就"],
       keywordsEn: ["Success", "Joy", "Vitality", "Achievement"],
@@ -398,6 +427,7 @@ export const MAJOR_ARCANA: TarotCard[] = [
     id: 20,
     name: "审判",
     nameEn: "Judgement",
+    emoji: "📯",
     upright: {
       keywords: ["重生", "觉醒", "宽恕", "救赎"],
       keywordsEn: ["Rebirth", "Awakening", "Forgiveness", "Redemption"],
@@ -416,6 +446,7 @@ export const MAJOR_ARCANA: TarotCard[] = [
     id: 21,
     name: "世界",
     nameEn: "The World",
+    emoji: "🌍",
     upright: {
       keywords: ["完成", "成就", "旅行", "圆满"],
       keywordsEn: ["Completion", "Achievement", "Travel", "Fulfillment"],
@@ -629,3 +660,6 @@ export function generateTarotNFTMetadata(reading: TarotReading) {
 export function generateTarotTokenURI(metadata: object): string {
   return `data:application/json;base64,${btoa(JSON.stringify(metadata))}`;
 }
+
+// 导出塔罗牌数组的别名
+export const TAROT_CARDS = MAJOR_ARCANA;
