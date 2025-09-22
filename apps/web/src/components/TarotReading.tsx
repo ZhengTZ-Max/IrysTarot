@@ -1254,7 +1254,7 @@ export function TarotReading() {
                         onClick={handleDrawCard}
                         className="px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold rounded-full hover:from-purple-700 hover:to-pink-700 transform hover:scale-105 transition-all duration-300 shadow-lg shadow-purple-500/50"
                       >
-                        {t('button.drawCard')} ({dailyCards.length + 1})
+                        {t('button.drawCard')}
                       </button>
                     </div>
                   )}

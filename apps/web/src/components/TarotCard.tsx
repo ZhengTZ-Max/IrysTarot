@@ -66,11 +66,11 @@ export function TarotCard({ card, isReversed, isRevealed, onClick }: TarotCardPr
             {/* 卡牌图片 */}
             <div className="flex-1 flex items-center justify-center mb-4">
               {!imageError ? (
-                <Image 
+                <Image
+                  width={360}
+                  height={432}
                   src={card.image} 
                   alt={card.name}
-                  width={160}
-                  height={192}
                   className={`max-w-full max-h-full object-contain rounded-lg ${isReversed ? 'rotate-180' : ''}`}
                   onError={() => setImageError(true)}
                 />

@@ -63,7 +63,7 @@ const translations = {
     
     // 每日限制
     'daily.title': '今日塔罗指引 / Today\'s Tarot Guidance',
-    'daily.desc': '每个人每天只能抽取两张塔罗牌。让神秘IRYS力量为您揭示今日的运势与指引。\nEach person can only draw two tarot cards per day. Let the mysterious IRYS power reveal today\'s fortune and guidance for you.',
+    'daily.desc': '让神秘的 IRYS 力量为您揭示今日的运势与指引。\nLet the mysterious IRYS power reveal today\'s fortune and guidance for you.',
     
   },
   en: {
