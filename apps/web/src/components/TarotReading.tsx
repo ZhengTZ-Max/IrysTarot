@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { useAccount, useWriteContract, useWaitForTransactionReceipt, useSignMessage } from 'wagmi';
+import Image from 'next/image';
 import { TarotCard } from './TarotCard';
 import { ConnectWallet } from './ConnectWallet';
 import { LanguageSwitcher } from './LanguageSwitcher';
@@ -167,12 +168,53 @@ export function TarotReading() {
     }
   };
 
+  const performTarotDraw = React.useCallback(async () => {
+    if (!address) return;
+
+    setIsDrawing(true);
+    setIsRevealed(false);
+    setCurrentReading(null);
+    setNeedsSignature(false);
+    setLoadingMessage('正在生成塔罗牌...');
+    
+    // 简单的延迟效果
+    setTimeout(() => {
+      try {
+        const reading = generateTarotReading(MAJOR_ARCANA[Math.floor(Math.random() * MAJOR_ARCANA.length)], Math.random() < 0.3, address);
+
+        // 添加到今日抽取的卡牌列表 - 支持无限抽取
+        const newDailyCards = [...dailyCards, reading];
+        
+        setDailyCards(newDailyCards);
+        setCurrentReading(reading);
+        setCurrentCardIndex(newDailyCards.length - 1);
+        setIsDrawing(false);
+        setIsLoading(false);
+        setLoadingMessage('');
+        
+        // 保存到本地存储 - 不再需要日期限制
+        const dailyKey = `tarot_daily_${address}`;
+        localStorage.setItem(dailyKey, JSON.stringify(newDailyCards));
+        
+        // 延迟显示卡牌
+        setTimeout(() => {
+          setIsRevealed(true);
+        }, 500);
+      } catch (error) {
+        console.error('Error generating tarot reading:', error);
+        setIsDrawing(false);
+        setIsLoading(false);
+        setLoadingMessage('');
+      }
+    }, 1000);
+  }, [address, dailyCards]);
+
   // 当签名成功后，进行抽卡
   React.useEffect(() => {
     if (signature && address && !currentReading) {
       performTarotDraw();
     }
-  }, [signature, address, currentReading]);
+  }, [signature, address, currentReading, performTarotDraw]);
 
   // 当签名错误时，关闭加载弹窗并显示失败信息
   React.useEffect(() => {
@@ -289,46 +331,6 @@ export function TarotReading() {
     }
   }, [isConfirmed, address, currentReading, hash, currentCardIndex, saveToHistory]);
 
-  const performTarotDraw = async () => {
-    if (!address) return;
-
-    setIsDrawing(true);
-    setIsRevealed(false);
-    setCurrentReading(null);
-    setNeedsSignature(false);
-    setLoadingMessage('正在生成塔罗牌...');
-    
-    // 简单的延迟效果
-    setTimeout(() => {
-      try {
-        const reading = generateTarotReading(MAJOR_ARCANA[Math.floor(Math.random() * MAJOR_ARCANA.length)], Math.random() < 0.3, address);
-
-        // 添加到今日抽取的卡牌列表 - 支持无限抽取
-        const newDailyCards = [...dailyCards, reading];
-        
-        setDailyCards(newDailyCards);
-        setCurrentReading(reading);
-        setCurrentCardIndex(newDailyCards.length - 1);
-        setIsDrawing(false);
-        setIsLoading(false);
-        setLoadingMessage('');
-        
-        // 保存到本地存储 - 不再需要日期限制
-        const dailyKey = `tarot_daily_${address}`;
-        localStorage.setItem(dailyKey, JSON.stringify(newDailyCards));
-        
-        // 延迟显示卡牌
-        setTimeout(() => {
-          setIsRevealed(true);
-        }, 500);
-      } catch (error) {
-        console.error('Error generating tarot reading:', error);
-        setIsDrawing(false);
-        setIsLoading(false);
-        setLoadingMessage('');
-      }
-    }, 1000);
-  };
 
   const handleSubmitFortune = async () => {
     if (!address || !currentReading) return;
@@ -416,11 +418,16 @@ export function TarotReading() {
   };
 
   // 验证历史记录数据结构
-  const validateHistoryReading = (reading: any): reading is TarotReadingType & { id?: string; timestamp?: string } => {
-    return reading && 
+  const validateHistoryReading = (reading: unknown): reading is TarotReadingType & { id?: string; timestamp?: string } => {
+    return Boolean(reading && 
+           typeof reading === 'object' &&
+           reading !== null &&
+           'card' in reading &&
            reading.card && 
-           (reading.card.name || reading.card.nameEn) &&
-           (reading.interpretation || reading.meaning);
+           typeof reading.card === 'object' &&
+           reading.card !== null &&
+           ('name' in reading.card || 'nameEn' in reading.card) &&
+           ('interpretation' in reading || 'meaning' in reading));
   };
 
   // 加载历史运势数据
@@ -438,7 +445,7 @@ export function TarotReading() {
         // 验证和过滤数据
         const validHistory = parsedHistory.filter(validateHistoryReading);
         // 按日期排序，最新的在前
-        const sortedHistory = validHistory.sort((a: any, b: any) => 
+        const sortedHistory = validHistory.sort((a: TarotReadingType & { id?: string; timestamp?: string }, b: TarotReadingType & { id?: string; timestamp?: string }) => 
           new Date(b.timestamp || 0).getTime() - new Date(a.timestamp || 0).getTime()
         );
         setHistoryReadings(sortedHistory);
@@ -961,9 +968,11 @@ export function TarotReading() {
                           <div className="flex-shrink-0">
                             <div className="w-42 h-48 rounded-xl shadow-lg border-2 border-purple-400/30 hover:border-purple-300/50 transition-all duration-300 overflow-hidden">
                               {reading.card?.image ? (
-                                <img
+                                <Image
                                   src={reading.card.image}
                                   alt={reading.card?.name || '塔罗牌'}
+                                  width={168}
+                                  height={192}
                                   className="w-full h-full object-cover"
                                   onError={(e) => {
                                     // 如果图片加载失败，显示表情符号作为后备
@@ -1086,9 +1095,11 @@ export function TarotReading() {
                     {/* 卡牌图片 */}
                     <div className="aspect-[3/4] mb-3 rounded-lg overflow-hidden">
                       {card.image ? (
-                        <img
+                        <Image
                           src={card.image}
                           alt={card.name}
+                          width={200}
+                          height={267}
                           className="w-full h-full object-cover"
                           onError={(e) => {
                             const target = e.target as HTMLImageElement;

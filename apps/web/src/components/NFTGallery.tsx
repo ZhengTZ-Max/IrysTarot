@@ -2,7 +2,7 @@
 
 import { useAccount, useReadContract } from 'wagmi';
 import { CONTRACT_CONFIG } from '@/lib/contract';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 /**
  * NFT Gallery component to display user's NFTs
@@ -30,7 +30,7 @@ export function NFTGallery() {
   /**
    * Fetch user's NFTs
    */
-  const fetchUserNFTs = async () => {
+  const fetchUserNFTs = useCallback(async () => {
     if (!address || !balance) return;
 
     const nfts = [];
@@ -57,13 +57,13 @@ export function NFTGallery() {
     }
     
     setUserNFTs(nfts);
-  };
+  }, [address, balance]);
 
   useEffect(() => {
     if (isConnected && address && balance) {
       fetchUserNFTs();
     }
-  }, [isConnected, address, balance]);
+  }, [isConnected, address, balance, fetchUserNFTs]);
 
   if (!isConnected) {
     return (
